@@ -35,78 +35,110 @@ gradient_function <- function(beta, X, y) {
 # Iteratively updates beta in the direction of negative gradient of the cost function,
 # scaled by learning rate. Checks for convergence in each iteration. Returns optimized coefficients beta.
 logistic_regression <- function(X, y, learning_rate = 0.01, max_iterations = 10000, tolerance = 1e-6) {
+  # Initial coefficient estimation using least squares
   beta <- solve(t(X) %*% X) %*% t(X) %*% y
   previous_cost <- Inf
   
-  for (iteration in 1:max_iterations) {t
+  # Iterative optimization process
+  for (iteration in 1:max_iterations) {
     current_cost <- cost_function(beta, X, y)
-
-    # if (abs(previous_cost - current_cost) < tolerance) {
-    #   break
-    # }
     if (!is.na(current_cost) && !is.infinite(current_cost) && abs(previous_cost - current_cost) < tolerance) {
       break
     }
     previous_cost <- current_cost
-    
-    # Update beta based on the gradient
     grad <- gradient_function(beta, X, y)
     beta <- beta - learning_rate * grad
   }
   
-  return(beta)
+  # Predict and binarize predictions
+  predicted_probs <- logistic_function(beta, X)
+  predictions <- ifelse(predicted_probs > 0.5, 1, 0)
+  
+  # Confusion matrix components
+  TP <- sum(predictions == 1 & y == 1)
+  TN <- sum(predictions == 0 & y == 0)
+  FP <- sum(predictions == 1 & y == 0)
+  FN <- sum(predictions == 0 & y == 1)
+  
+  # Calculate metrics
+  prevalence <- sum(y) / length(y)
+  accuracy <- (TP + TN) / (TP + TN + FP + FN)
+  sensitivity <- TP / (TP + FN)
+  specificity <- TN / (TN + FP)
+  false_discovery_rate <- FP / (TP + FP)
+  diagnostic_odds_ratio <- (TP / FP) / (FN / TN)
+  
+  # Return a list containing optimized coefficients, confusion matrix, and metrics
+  return(list(
+    OptimizedCoefficients = beta,
+    ConfusionMatrix = matrix(c(TP, FP, FN, TN), nrow = 2, byrow = TRUE),
+    Prevalence = prevalence,
+    Accuracy = accuracy,
+    Sensitivity = sensitivity,
+    Specificity = specificity,
+    FalseDiscoveryRate = false_discovery_rate,
+    DiagnosticOddsRatio = diagnostic_odds_ratio
+  ))
+}
+
+  
+plot_logistic_curve <- function(X, y) {
+  # Add an intercept to X
+  X_matrix <- cbind(1, X)
+  
+  # Compute beta estimates using your logistic regression function
+  logistic_regression_result <- logistic_regression(X_matrix, y)
+  beta_estimates <- logistic_regression_result$OptimizedCoefficients
+  
+  # Calculate predicted probabilities using the logistic function and beta estimates
+  predicted_probabilities <- logistic_function(beta_estimates, X_matrix)
+  
+  # Create a data frame for plotting
+  plot_data <- data.frame(X = X, y = y, predicted = predicted_probabilities)
+  
+  # Sorting the data for a smooth curve in plot
+  plot_data <- plot_data[order(plot_data$X), ]
+  
+  # Plot the original data points
+  plot(y ~ X, data = plot_data, col = "red", xlab = "Predictor", ylab = "Binary Response", 
+       main = "Fitted Logistic Curve and Original Data Points",
+       pch = 19)  # Points for actual responses
+  
+  # Add the logistic regression line
+  lines(plot_data$X, plot_data$predicted, type = "l", col = "blue", lwd = 2)
 }
 
 
-# Example using our created functions
-  data(mtcars)
+plot_logistic_curve(mtcars$wt, mtcars$am)
 
+#gpt link for creating cutsom logistic regression and plotting functions: https://chat.openai.com/share/2827b3e8-a2c6-4c1d-ab39-a42235cb1deb
+#gpt link for additional editing, and the addition of the matrix and other metrics to the logistic regression function
+# https://chat.openai.com/share/39e19490-5083-4928-a5ef-46666b1759e4
+  
+
+  
+  # EXAMPLE TO BE USED
+  data(mtcars)
+  
   # Prepare the data
   X <- mtcars$wt
   y <- mtcars$am
-
+  
   # Convert X to a matrix and add an intercept
   X_matrix <- cbind(1, X)
-
+  
   beta_estimates <- logistic_regression(X_matrix, y)
-
+  
   # Print the estimated coefficients
   beta_estimates
-  
-  
-  
-  
-  plot_logistic_curve <- function(X, y) {
-    # Add an intercept to X
-    X_matrix <- cbind(1, X)
-    
-    # Compute beta estimates using your logistic regression function
-    beta_estimates <- logistic_regression(X_matrix, y)
-    
-    # Calculate predicted probabilities using the logistic function and beta estimates
-    predicted_probabilities <- logistic_function(beta_estimates, X_matrix)
-    
-    # Create a data frame for plotting
-    plot_data <- data.frame(X = X, y = y, predicted = predicted_probabilities)
-    
-    # Sorting the data for a smooth curve in plot
-    plot_data <- plot_data[order(plot_data$X), ]
-    
-    # Plot the original data points
-    plot(y ~ X, data = plot_data, col = "red", xlab = "Predictor", ylab = "Binary Response", 
-         main = "Fitted Logistic Curve and Original Data Points",
-         pch = 19)  # Points for actual responses
-    
-    # Add the logistic regression line
-    lines(plot_data$X, plot_data$predicted, type = "l", col = "blue", lwd = 2)
-  }
-  
-  
   plot_logistic_curve(mtcars$wt, mtcars$am)
   
   
   
-#Actual Logistic Regression in R for comparison
+  
+  
+  
+  #ACTUAL REGRESSION FOR COMPARISON OF BETA
   data_glm <- data.frame(y = y, X = X)
 
   # Fit Logistic Regression model using glm()

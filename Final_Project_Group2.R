@@ -152,14 +152,16 @@ plot_logistic_curve(mtcars$wt, mtcars$am)
 
   
 # Bootstrap Function
-# This is a function presented to the user and it takes the significance level, alpha, and the number of bootstraps, B.
+# This is a function presented to the user and it takes the significance level, alpha, the number of bootstraps, B, 
+# an X Vector as predictor and y values of 0 or 1 as output variables. 
 # Purpose: To compute a more accurate confidence interval for the small data set, beta_estimates. 
 # How it works: This function creates a new larger sample, boot_mean, using values from the original data set, beta_estimates.
 # This larger sample is made by creating n sized samples, beta_estimates_star, and using the mean of each n sized sample. 
 # The n sized samples are made by selecting numbers randomly from the original data set with replacement.
 # The function then uses the quantile function to create the new confidence interval using the alpha provided by the user.
-Bootstrap_function <- function(alpha, B = 20) {
+Bootstrap_function <- function(alpha, B = 20, X, y) {
   # n is the length of the vector beta_estimates that we computed earlier, but I repeated the calculation here.
+  X_matrix <- cbind(1, X)
   logistic_regression_result <- logistic_regression(X_matrix, y)
   beta_estimates <- logistic_regression_result$OptimizedCoefficients
   n <- length(beta_estimates)

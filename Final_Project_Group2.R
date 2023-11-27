@@ -175,12 +175,70 @@ Bootstrap_function <- function(alpha, B = 20, X, y) {
 }
 
 # Cut-off Value Function
-#
-# Purpose:
-# How it works:
-cutoff_value_function <- function(X, y) {
-  X_matrix <- cbind(1, X)
-  logistic_regression_result <- logistic_regression(X_matrix, y)
+# This is a function presented to the user and it takes an X Vector as predictor, y values of 0 or 1 as output variables,
+# coefficients beta, and the metric value. The metric value needs to be either "prevalence", "accuracy", "sensitivity",
+# "specificity", "false discovery rate", or "diagnostic odds ratio".
+# Purpose: To create a plot that shows how the value of the metric chosen changes as the cut-off value changes.
+# How it works: This function creates a vector for the metric chosen that has all of the values for that metric for each 
+# cut-off value from 0.1 to 0.9 with steps of 0.1. It then plots this vector against the cut-off values.
+cutoff_value_function <- function(X, y, beta, metric) {
+ 
+   # Predict and binarize predictions
+  predicted_probs <- logistic_function(beta, X)
   
-}
+  # create empty vectors for each metric
+  prevalence_vector <- rep(NA, 9)
+  accuracy_vector <- rep(NA, 9)
+  sensitivity_vector <- rep(NA, 9)
+  specificity_vector <- rep(NA, 9)
+  FDR_vector <- rep(NA, 9)
+  DOR_vector <- rep(NA, 9)
+  
+  for (i in seq(0.1, 0.9, by = 0.1)) {
+    predictions <- ifelse(predicted_probs > i, 1, 0)
+    
+    # Confusion matrix components
+    TP <- sum(predictions == 1 & y == 1)
+    TN <- sum(predictions == 0 & y == 0)
+    FP <- sum(predictions == 1 & y == 0)
+    FN <- sum(predictions == 0 & y == 1)
+    
+    if(metric == "prevalence") {
+    # Calculate prevalence
+    prevalence_star <- sum(y) / length(y)
+    prevalence_vector[i] <- prevalence_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = prevalence_vector, main = "Prevalence Plot", xlab = "Cut-off Values", ylab = "Prevalence", pch = 16, col = "blue")
+  
+  } else if(metric == "accuracy") {
+    # Calculate accuracy
+    accuracy_star <- (TP + TN) / (TP + TN + FP + FN)
+    accuracy_vector[i] <- accuracy_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = accuracy_vector, main = "Accuracy Plot", xlab = "Cut-off Values", ylab = "Accuracy", pch = 16, col = "blue")
+  
+  } else if(metric == "sensitivity") {
+    # Calculate sensitivity
+    sensitivity_star <- TP / (TP + FN)
+    sensitivity_vector[i] <- sensitivity_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = sensitivity_vector, main = "Sensitivity Plot", xlab = "Cut-off Values", ylab = "Sensitivity", pch = 16, col = "blue")
+  
+  } else if(metric == "specificity") {
+    # Calculate specificity
+    specificity_star <- TN / (TN + FP)
+    specificity_vector[i] <- specificity_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = specificity_vector, main = "Specificity Plot", xlab = "Cut-off Values", ylab = "Specificity", pch = 16, col = "blue")
+  
+  } else if(metric == "false discovery rate") {
+    # Calculate false discovery rate
+    FDR_star <- FP / (TP + FP)
+    FDR_vector[i] <- FDR_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = FDR_vector, main = "False Discovery Rate Plot", xlab = "Cut-off Values", ylab = "False Discovery Rate", pch = 16, col = "blue")
+  
+  } else if(metric == "diagnostic odds ratio") {
+    # Calculate diagnostic odds ratio
+    DOR_star <- FP / (TP + FP)
+    DOR_vector[i] <- DOR_star
+    plot(x = seq(0.1, 0.9, by = 0.1), y = DOR_vector, main = "Diagnostic Odds Ratio Plot", xlab = "Cut-off Values", ylab = "Diagnostic Odds Ratio", pch = 16, col = "blue")
+  }
+}}
 
+#chatgpt link for creating plots: https://chat.openai.com/share/b77ecd7f-58ef-4d44-9551-e0bb87087b39 

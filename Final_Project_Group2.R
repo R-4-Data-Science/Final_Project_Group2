@@ -173,3 +173,14 @@ Bootstrap_function <- function(alpha, B = 20, X, y) {
   confidence_int <- quantile(boot_mean, c((alpha/2), 1-(alpha/2)))
   return(confidence_int)
 }
+
+# Cut-off Value Function
+#
+# Purpose:
+# How it works:
+cutoff_value_function <- function(X, y) {
+  X_matrix <- cbind(1, X)
+  logistic_regression_result <- logistic_regression(X_matrix, y)
+  
+}
+

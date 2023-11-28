@@ -128,6 +128,7 @@ plot_logistic_curve(mtcars$wt, mtcars$am)
   X_matrix <- cbind(1, X)
   
   beta_estimates <- logistic_regression(X_matrix, y)
+  beta_estimates
   
   # Print the estimated coefficients
   beta_estimates
@@ -173,6 +174,13 @@ Bootstrap_function <- function(alpha, B = 20, X, y) {
   confidence_int <- quantile(boot_mean, c((alpha/2), 1-(alpha/2)))
   return(confidence_int)
 }
+
+# Example Bootstrap Function
+data(mtcars)
+# Prepare the data
+X <- mtcars$wt
+y <- mtcars$am
+Bootstrap_function(alpha = 0.5, B = 20, X = X, y = y)
 
 # Cut-off Value Function
 # This is a function presented to the user and it takes an X Vector as predictor, y values of 0 or 1 as output variables,

@@ -86,13 +86,13 @@ logistic_regression <- function(X, y, learning_rate = 0.01, max_iterations = 100
 data(mtcars)
 logistic_regression(X = cbind(mtcars$mpg, mtcars$wt), y = mtcars$am)
 
-  
+
 plot_logistic_curve <- function(X, y) {
   # Add an intercept to X
-  X_matrix <- cbind(1, X)
+  #X_matrix <- cbind(1, X)
   
   # Compute beta estimates using your logistic regression function
-  logistic_regression_result <- logistic_regression(X_matrix, y)
+  logistic_regression_result <- logistic_regression(X, y)
   beta_estimates <- logistic_regression_result$OptimizedCoefficients
   
   # Calculate predicted probabilities using the logistic function and beta estimates
@@ -116,6 +116,7 @@ plot_logistic_curve <- function(X, y) {
   # EXAMPLE TO BE USED
   data(mtcars)
   plot_logistic_curve(mtcars$wt, mtcars$am)
+  
 
 #gpt link for creating cutsom logistic regression and plotting functions: https://chat.openai.com/share/2827b3e8-a2c6-4c1d-ab39-a42235cb1deb
 #gpt link for additional editing, and the addition of the matrix and other metrics to the logistic regression function
@@ -132,9 +133,7 @@ plot_logistic_curve <- function(X, y) {
 # The n sized samples are made by selecting numbers randomly from the original data set with replacement.
 # The function then uses the quantile function to create the new confidence interval using the alpha provided by the user.
 Bootstrap_function <- function(alpha, B = 20, X, y) {
-  # n is the length of the vector beta_estimates that we computed earlier, but I repeated the calculation here.
-  X_matrix <- cbind(1, X)
-  logistic_regression_result <- logistic_regression(X_matrix, y)
+  logistic_regression_result <- logistic_regression(X, y)
   beta_estimates <- logistic_regression_result$OptimizedCoefficients
   n <- length(beta_estimates)
   boot_mean <- rep(NA, B)
@@ -149,7 +148,7 @@ Bootstrap_function <- function(alpha, B = 20, X, y) {
 # Example Bootstrap Function
 data(mtcars)
 # Prepare the data
-X <- mtcars$gears
+X <- mtcars$mpg
 y <- mtcars$am
 Bootstrap_function(alpha = 0.05, B = 20, X = X, y = y)
 
@@ -161,8 +160,9 @@ Bootstrap_function(alpha = 0.05, B = 20, X = X, y = y)
 # How it works: This function creates a vector for the metric chosen that has all of the values for that metric for each 
 # cut-off value from 0.1 to 0.9 with steps of 0.1. It then plots this vector against the cut-off values.
 cutoff_value_function <- function(X, y, metric) {
-  # Extracting the coefficients as a vector
-  beta_vector <- as.numeric(beta_estimates$OptimizedCoefficients)
+  
+  logistic_regression_result <- logistic_regression(X, y)
+  beta_vector <- logistic_regression_result$OptimizedCoefficients
   
   # Now use beta_vector in your logistic function
   predicted_probs <- logistic_function(beta_vector, cbind(1, X))
@@ -203,13 +203,6 @@ cutoff_value_function <- function(X, y, metric) {
 
 # Example for cutoff_value_function
 data(mtcars)
-
-# Prepare the data
-# Assuming 'am' (transmission: 0 = automatic, 1 = manual) as the binary response variable
-X <- mtcars$wt
-y <- mtcars$am
-
-# Call the cutoff_value_function2 to evaluate 'prevalence' across different cutoffs
 cutoff_value_function(X = mtcars$wt, y = mtcars$am, "sensitivity")
 
 #chatgpt link for creating plots: https://chat.openai.com/share/b77ecd7f-58ef-4d44-9551-e0bb87087b39 

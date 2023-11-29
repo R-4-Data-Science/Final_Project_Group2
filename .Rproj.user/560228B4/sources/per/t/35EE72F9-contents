@@ -18,7 +18,6 @@ cost_function <- function(beta, X, y) {
   return(cost)
 }
 
-
 # Gradient of the Cost Function
 # Purpose: Computes the gradient of the cost function with respect to beta.
 # How it Works: Used in gradient descent to determine direction to adjust coefficients beta. Gradient calculated as X^T * (p - y).
@@ -28,13 +27,15 @@ gradient_function <- function(beta, X, y) {
 }
 
 # Logistic Regression
-# This is a function presented to the user, it takes an X Vector as predictor and y values of 0 or 1 as output variables.
+# This is a function presented to the user, it takes a matrix of X as predictors and y values of 0 or 1 as output variables.
 # The learning rate, max iterations, and tolerance can be adjusted by the user.
 # Purpose: Optimizes coefficients beta to minimize the cost function.
 # How it Works: Initializes beta using least-squares formula (X^T * X)^-1 * X^T * y. 
 # Iteratively updates beta in the direction of negative gradient of the cost function,
 # scaled by learning rate. Checks for convergence in each iteration. Returns optimized coefficients beta.
 logistic_regression <- function(X, y, learning_rate = 0.01, max_iterations = 10000, tolerance = 1e-6) {
+  X <- as.matrix(X) 
+  X <- cbind(1, X)  
   # Initial coefficient estimation using least squares
   beta <- solve(t(X) %*% X) %*% t(X) %*% y
   previous_cost <- Inf
@@ -81,6 +82,10 @@ logistic_regression <- function(X, y, learning_rate = 0.01, max_iterations = 100
   ))
 }
 
+# EXAMPLE TO BE USED
+data(mtcars)
+logistic_regression(X = cbind(mtcars$mpg, mtcars$wt), y = mtcars$am)
+
   
 plot_logistic_curve <- function(X, y) {
   # Add an intercept to X
@@ -108,49 +113,15 @@ plot_logistic_curve <- function(X, y) {
   lines(plot_data$X, plot_data$predicted, type = "l", col = "blue", lwd = 2)
 }
 
-
-plot_logistic_curve(mtcars$wt, mtcars$am)
+  # EXAMPLE TO BE USED
+  data(mtcars)
+  plot_logistic_curve(mtcars$wt, mtcars$am)
 
 #gpt link for creating cutsom logistic regression and plotting functions: https://chat.openai.com/share/2827b3e8-a2c6-4c1d-ab39-a42235cb1deb
 #gpt link for additional editing, and the addition of the matrix and other metrics to the logistic regression function
 # https://chat.openai.com/share/39e19490-5083-4928-a5ef-46666b1759e4
   
-
   
-  # EXAMPLE TO BE USED
-  data(mtcars)
-  
-  # Prepare the data
-  X <- mtcars$wt
-  y <- mtcars$am
-  
-  # Convert X to a matrix and add an intercept
-  X_matrix <- cbind(1, X)
-  
-  beta_estimates <- logistic_regression(X_matrix, y)
-  beta_estimates
-  
-  # Print the estimated coefficients
-  beta_estimates
-  plot_logistic_curve(mtcars$wt, mtcars$am)
-  
-  
-  
-  
-  
-  
-  #ACTUAL REGRESSION FOR COMPARISON OF BETA
-  data_glm <- data.frame(y = y, X = X)
-
-  # Fit Logistic Regression model using glm()
-  model_glm <- glm(y ~ X, data = data_glm, family = binomial(link = "logit"))
-
-  # Display the summary of the model
-  summary(model_glm)
-
-  # To get the coefficients
-  coefficients(model_glm)
-
   
 # Bootstrap Function
 # This is a function presented to the user and it takes the significance level, alpha, the number of bootstraps, B, 
@@ -178,9 +149,9 @@ Bootstrap_function <- function(alpha, B = 20, X, y) {
 # Example Bootstrap Function
 data(mtcars)
 # Prepare the data
-X <- mtcars$wt
+X <- mtcars$gears
 y <- mtcars$am
-Bootstrap_function(alpha = 0.5, B = 20, X = X, y = y)
+Bootstrap_function(alpha = 0.05, B = 20, X = X, y = y)
 
 # Cut-off Value Function
 # This is a function presented to the user and it takes an X Vector as predictor, y values of 0 or 1 as output variables,
@@ -189,64 +160,58 @@ Bootstrap_function(alpha = 0.5, B = 20, X = X, y = y)
 # Purpose: To create a plot that shows how the value of the metric chosen changes as the cut-off value changes.
 # How it works: This function creates a vector for the metric chosen that has all of the values for that metric for each 
 # cut-off value from 0.1 to 0.9 with steps of 0.1. It then plots this vector against the cut-off values.
-cutoff_value_function <- function(X, y, beta, metric) {
- 
-   # Predict and binarize predictions
-  predicted_probs <- logistic_function(beta, X)
+cutoff_value_function <- function(X, y, metric) {
+  # Extracting the coefficients as a vector
+  beta_vector <- as.numeric(beta_estimates$OptimizedCoefficients)
   
-  # create empty vectors for each metric
-  prevalence_vector <- rep(NA, 9)
-  accuracy_vector <- rep(NA, 9)
-  sensitivity_vector <- rep(NA, 9)
-  specificity_vector <- rep(NA, 9)
-  FDR_vector <- rep(NA, 9)
-  DOR_vector <- rep(NA, 9)
+  # Now use beta_vector in your logistic function
+  predicted_probs <- logistic_function(beta_vector, cbind(1, X))
   
-  for (i in seq(0.1, 0.9, by = 0.1)) {
-    predictions <- ifelse(predicted_probs > i, 1, 0)
+  # Initialize vectors for metrics
+  metric_values <- rep(NA, 9)
+  cutoffs <- seq(0.1, 0.9, by = 0.1)
+  
+  for (i in 1:length(cutoffs)) {
+    cutoff <- cutoffs[i]
+    predictions <- ifelse(predicted_probs > cutoff, 1, 0)
     
-    # Confusion matrix components
+    # Calculate metrics based on predictions
     TP <- sum(predictions == 1 & y == 1)
     TN <- sum(predictions == 0 & y == 0)
     FP <- sum(predictions == 1 & y == 0)
     FN <- sum(predictions == 0 & y == 1)
     
-    if(metric == "prevalence") {
-    # Calculate prevalence
-    prevalence_star <- sum(y) / length(y)
-    prevalence_vector[i] <- prevalence_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = prevalence_vector, main = "Prevalence Plot", xlab = "Cut-off Values", ylab = "Prevalence", pch = 16, col = "blue")
-  
-  } else if(metric == "accuracy") {
-    # Calculate accuracy
-    accuracy_star <- (TP + TN) / (TP + TN + FP + FN)
-    accuracy_vector[i] <- accuracy_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = accuracy_vector, main = "Accuracy Plot", xlab = "Cut-off Values", ylab = "Accuracy", pch = 16, col = "blue")
-  
-  } else if(metric == "sensitivity") {
-    # Calculate sensitivity
-    sensitivity_star <- TP / (TP + FN)
-    sensitivity_vector[i] <- sensitivity_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = sensitivity_vector, main = "Sensitivity Plot", xlab = "Cut-off Values", ylab = "Sensitivity", pch = 16, col = "blue")
-  
-  } else if(metric == "specificity") {
-    # Calculate specificity
-    specificity_star <- TN / (TN + FP)
-    specificity_vector[i] <- specificity_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = specificity_vector, main = "Specificity Plot", xlab = "Cut-off Values", ylab = "Specificity", pch = 16, col = "blue")
-  
-  } else if(metric == "false discovery rate") {
-    # Calculate false discovery rate
-    FDR_star <- FP / (TP + FP)
-    FDR_vector[i] <- FDR_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = FDR_vector, main = "False Discovery Rate Plot", xlab = "Cut-off Values", ylab = "False Discovery Rate", pch = 16, col = "blue")
-  
-  } else if(metric == "diagnostic odds ratio") {
-    # Calculate diagnostic odds ratio
-    DOR_star <- FP / (TP + FP)
-    DOR_vector[i] <- DOR_star
-    plot(x = seq(0.1, 0.9, by = 0.1), y = DOR_vector, main = "Diagnostic Odds Ratio Plot", xlab = "Cut-off Values", ylab = "Diagnostic Odds Ratio", pch = 16, col = "blue")
+    if (metric == "accuracy") {
+      metric_values[i] <- (TP + TN) / (TP + TN + FP + FN)
+    } else if (metric == "sensitivity") {
+      metric_values[i] <- TP / (TP + FN)
+    } else if (metric == "specificity") {
+      metric_values[i] <- TN / (TN + FP)
+    } else if (metric == "false discovery rate") {
+      metric_values[i] <- FP / (TP + FP)
+    } else if (metric == "diagnostic odds ratio") {
+      metric_values[i] <- (TP / FP) / (FN / TN)
+    } else if (metric == "prevalence") {
+      metric_values[i] <- sum(y) / length(y)
+    }
   }
-}}
+  
+  # Plot the specified metric
+  plot(cutoffs, metric_values, type = "b", xlab = "Cut-off Values", ylab = metric, 
+       main = paste(metric, "plot"), pch = 16, col = "blue")
+}
+
+# Example for cutoff_value_function
+data(mtcars)
+
+# Prepare the data
+# Assuming 'am' (transmission: 0 = automatic, 1 = manual) as the binary response variable
+X <- mtcars$wt
+y <- mtcars$am
+
+# Call the cutoff_value_function2 to evaluate 'prevalence' across different cutoffs
+cutoff_value_function(X = mtcars$wt, y = mtcars$am, "sensitivity")
 
 #chatgpt link for creating plots: https://chat.openai.com/share/b77ecd7f-58ef-4d44-9551-e0bb87087b39 
+#chatgpt link for editing of cutoff_value_function and general modifications: https://chat.openai.com/share/9d2dc05f-76d9-40b2-9944-4d8830bd95aa
+

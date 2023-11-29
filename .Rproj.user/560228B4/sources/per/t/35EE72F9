@@ -3,7 +3,7 @@
     "path": "~/Desktop/GitHub/Final_Project_Group2/Final_Project_Group2.R",
     "project_path": "Final_Project_Group2.R",
     "type": "r_source",
-    "hash": "1486533539",
+    "hash": "1969320685",
     "contents": "",
     "dirty": false,
     "created": 1700688759669.0,
@@ -13,15 +13,15 @@
         "tempName": "Untitled1",
         "source_window_id": "",
         "Source": "Source",
-        "cursorPosition": "9,0",
-        "scrollLine": "0"
+        "cursorPosition": "188,40",
+        "scrollLine": "179"
     },
     "folds": "",
-    "lastKnownWriteTime": 1701224858,
+    "lastKnownWriteTime": 1701236377,
     "encoding": "UTF-8",
     "collab_server": "",
     "source_window": "",
-    "last_content_update": 1701224858,
+    "last_content_update": 1701236377651,
     "read_only": false,
     "read_only_alternatives": []
 }

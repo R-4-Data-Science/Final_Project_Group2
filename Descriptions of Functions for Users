@@ -1,0 +1,121 @@
+
+#### logistic_regression Function ####
+Purpose: The logistic_regression function performs logistic regression, a statistical method used for binary classification. It estimates the relationship between a binary dependent variable and one or more independent variables. It does so without using logistic regression or classification functions in R (not even optim()).
+
+Inputs:
+- X: A matrix of predictors. Each column represents a different predictor variable. The function automatically adds an intercept term.
+- y: A vector of binary response variables (0 or 1) corresponding to each row in X.
+- learning_rate (optional): The step size at each iteration while moving towards a minimum of the cost function. Default is 0.01.
+- max_iterations (optional): The maximum number of iterations for the optimization process. Default is 10,000.
+- tolerance (optional): The threshold for convergence. If the change in cost function between iterations is less than this value, the optimization stops. Default is 1e-6.
+
+Functionality:
+- Initialization: Initializes coefficients (beta) using a least-squares estimate. This serves as the starting point for optimization.
+- Optimization Loop:
+  - Calculates the current cost using the cost_function.
+  - Checks for convergence. If the change in cost is less than the specified tolerance or if the cost is non-finite, the loop breaks.
+  - Updates beta by moving in the direction of the negative gradient of the cost function, scaled by the learning_rate.
+- Prediction and Evaluation:
+  - After finding the optimized coefficients, the function predicts binary outcomes for the input data.
+  - Constructs a confusion matrix and calculates various performance metrics like accuracy, sensitivity, specificity, false discovery rate, and diagnostic odds ratio.
+
+Returns:
+- OptimizedCoefficients: The optimized coefficient values for the predictors.
+- ConfusionMatrix: A 2x2 matrix representing the confusion matrix of the model.
+- Performance Metrics:
+  - Prevalence: The proportion of positive cases in the dataset.
+  - Accuracy: The proportion of true results (both true positives and true negatives) in the data.
+  - Sensitivity: The ability of the model to correctly identify positive cases.
+  - Specificity: The ability of the model to correctly identify negative cases.
+  - FalseDiscoveryRate: The probability of a positive prediction being false.
+  - DiagnosticOddsRatio: The ratio of the odds of the test being positive if the subject has a condition versus if the subject does not have the condition.
+
+Usage: This function is used for binary classification tasks where the response variable is binary (0 or 1). It's suitable for scenarios where logistic regression is an appropriate model, such as predicting the likelihood of an event occurring, based on various predictors.
+
+Example:
+data(mtcars)
+logistic_regression(X = cbind(mtcars$mpg, mtcars$wt), y = mtcars$am)
+
+
+
+#### plot_logistic_curve Function ####
+Purpose: This function visualizes the relationship between a binary response variable 
+and a single predictor using a logistic regression model. It plots the original data points 
+and overlays a logistic regression curve.
+
+Inputs:
+- X: A numeric vector representing the predictor variable.
+- y: A binary vector (0 or 1) representing the response variable.
+
+Functionality:
+1. Model Fitting: The function first augments X with an intercept and then fits a logistic 
+   regression model using X and y.
+2. Probability Prediction: It calculates predicted probabilities for each observation using 
+   the fitted model.
+3. Data Preparation: A data frame is created for plotting, containing the original and 
+   predicted values.
+4. Plotting: The function plots the actual data points and adds a logistic regression curve, 
+   showing the predicted probabilities.
+
+Output: A plot with the original binary response (in red) against the predictor variable and 
+the fitted logistic regression curve (in blue).
+
+Usage: Use this function to understand the relationship between a binary outcome and a 
+single predictor. It's particularly useful for visualizing the effect of a predictor on a 
+binary response in logistic regression models.
+
+Example:
+data(mtcars)
+plot_logistic_curve(mtcars$wt, mtcars$am)
+
+
+#### Bootstrap_function ####
+Purpose: Computes a confidence interval for beta estimates using the bootstrap method, particularly useful for small datasets.
+
+Inputs:
+- alpha: Significance level for the confidence interval.
+- B (optional): Number of bootstrap samples. Default is 20.
+- X: Predictor variable (numeric vector).
+- y: Binary response variable (0 or 1).
+
+Functionality:
+- Performs logistic regression to obtain beta estimates.
+- Creates bootstrap samples from the beta estimates.
+- Computes the mean of each bootstrap sample.
+- Uses these bootstrap means to compute the confidence interval at the specified alpha level.
+
+Usage:
+- Ideal for obtaining a more accurate confidence interval for beta estimates from logistic regression, especially when the original dataset is small.
+
+Limitations:
+- Currently can only take one prediction variable.
+
+Example:
+data(mtcars)
+Bootstrap_function(alpha = 0.5, B = 20, X = mtcars$wt, y = mtcars$am)
+
+
+#### cutoff_value_function Function ####
+Purpose: Evaluates and plots various performance metrics for a logistic regression model with a single predictor variable over a range of cutoff values.
+
+Inputs:
+- X: Predictor variable (numeric vector).
+- y: Binary response variable (0 or 1).
+- metric: The performance metric to be evaluated. Options include 'accuracy', 'sensitivity', 'specificity', 'false discovery rate', 'diagnostic odds ratio', and 'prevalence'.
+
+Functionality:
+- Performs logistic regression to fit a model using a single predictory X and binary variable y.
+- Calculates the specified performance metric for each cutoff value from 0.1 to 0.9.
+- Plots the metric values against the cutoff values.
+
+Limitations:
+- The current implementation of cutoff_value_function2 may not handle cases where any of the confusion matrix components (True Positives, True Negatives, False Positives, False Negatives) are zero, particularly when computing metrics like sensitivity, specificity, false discovery rate, and diagnostic odds ratio.
+
+Usage:
+- This function is useful for understanding how different performance metrics vary with the threshold for classifying a binary outcome.
+- It helps in choosing an appropriate cutoff value for making predictions based on the logistic regression model.
+
+Example:
+data(mtcars)
+cutoff_value_function2(X = mtcars$wt, y = mtcars$am, "diagnostic odds ratio")
+

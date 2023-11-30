@@ -89,7 +89,7 @@ logistic_regression(X = cbind(mtcars$mpg, mtcars$wt), y = mtcars$am)
 
 plot_logistic_curve <- function(X, y) {
   # Add an intercept to X
-  #X_matrix <- cbind(1, X)
+  X_matrix <- cbind(1, X)
   
   # Compute beta estimates using your logistic regression function
   logistic_regression_result <- logistic_regression(X, y)
@@ -117,7 +117,6 @@ plot_logistic_curve <- function(X, y) {
   data(mtcars)
   plot_logistic_curve(mtcars$wt, mtcars$am)
   
-
 #gpt link for creating cutsom logistic regression and plotting functions: https://chat.openai.com/share/2827b3e8-a2c6-4c1d-ab39-a42235cb1deb
 #gpt link for additional editing, and the addition of the matrix and other metrics to the logistic regression function
 # https://chat.openai.com/share/39e19490-5083-4928-a5ef-46666b1759e4
@@ -207,4 +206,3 @@ cutoff_value_function(X = mtcars$wt, y = mtcars$am, "sensitivity")
 
 #chatgpt link for creating plots: https://chat.openai.com/share/b77ecd7f-58ef-4d44-9551-e0bb87087b39 
 #chatgpt link for editing of cutoff_value_function and general modifications: https://chat.openai.com/share/9d2dc05f-76d9-40b2-9944-4d8830bd95aa
-

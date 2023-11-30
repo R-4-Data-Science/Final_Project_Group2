@@ -1,6 +1,6 @@
 
 #### logistic_regression Function ####
-Purpose: The logistic_regression function performs logistic regression, a statistical method used for binary classification. It estimates the relationship between a binary dependent variable and one or more independent variables. It does so without using logistic regression or classification functions in R (not even optim()).
+Purpose: The logistic_regression function performs logistic regression, a statistical method used for binary classification. It estimates the relationship between a binary dependent variable and one or more independent variables. It does so without using logistic regression or classification functions in R (not even optim()). 
 
 Inputs:
 - X: A matrix of predictors. Each column represents a different predictor variable. The function automatically adds an intercept term.

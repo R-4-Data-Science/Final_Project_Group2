@@ -1,0 +1,28 @@
+Package: FinalProjectGroup2
+Type: Package
+Title: Statistical Tools for Logistic Regression Analysis
+Version: 0.1.0
+Date: 12/01/2023
+Authors@R: c(
+    person("Shannon", "Clark", email = "sdc0047@auburn.edu", role = c("aut")),
+    person("Cameron", "Tice", email = "cwt0019@auburn.edu", role = c("aut")),
+    person("Jason", "Key", email = "jek0010@auburn.edu", role = c("aut", "cre"))
+    )
+Maintainer: The package maintainer <yourself@somewhere.net>
+Description: This package provides a suite of functions for performing logistic
+    regression analysis. It includes functions for computing logistic regression
+    with gradient descent optimization, plotting logistic curves, calculating 
+    bootstrap confidence intervals, and determining optimal cutoff values for 
+    predictions.
+License: GNU
+Depends: R (>= 3.5.0)
+Imports: 
+  graphics,
+  stats
+Suggests:
+  testthat,
+  knitr,
+  rmarkdown
+Encoding: UTF-8
+LazyData: true
+RoxygenNote: 7.2.3

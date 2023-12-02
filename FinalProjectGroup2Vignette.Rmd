@@ -16,7 +16,8 @@ library(FinalProjectGroup2)
 The `FinalProjectGroup2` package provides users with four functions, "logistic_regression", "plot_logistic_curve", "bootstrap function", and "cutoff_value_function"
 
 ## logistic_regression Function
-The logistic_regression function performs logistic regression, a statistical method used for binary classification. It estimates the relationship between a binary dependent variable and one or more independent variables.
+The logistic_regression function performs logistic regression, a statistical method used for binary classification. It estimates the relationship between a binary dependent variable and one or more independent variables. The function begins by preparing the matrix `X` and initializing coefficient estimates \( \beta \) using the least-squares formula \( (X^TX)^{-1}X^Ty \). The core of the function iteratively updates \( \beta \) to minimize the cost function, which is calculated as the negative sum of the log-likelihoods for each observation, an implementation of the estimator formula \( \sum_{i=1}^n (-y_i \cdot \ln(p_i) - (1 - y_i) \cdot \ln(1 - p_i)) \). The probabilities \( p_i \) are computed using the logistic function \( \frac{1}{1 + \exp(-x_i^T \beta)} \). The iterative process involves gradient descent, where \( \beta \) is adjusted in the direction that reduces the cost function, provided by the gradient function. This process continues until convergence is achieved, as indicated by the change in cost function values falling below a predefined tolerance level.
+
 
 #### Arguments
 The arguments needed for this function are:
@@ -117,3 +118,14 @@ This function is useful for understanding how different performance metrics vary
 data(mtcars)
 cutoff_value_function(X = mtcars$wt, y = mtcars$am, "diagnostic odds ratio")
 ```
+
+## CHATGPT Documents Used During Project
+Creating cutsom logistic regression and plotting functions: https://chat.openai.com/share/2827b3e8-a2c6-4c1d-ab39-a42235cb1deb
+
+Additional editing and troubleshooting, addition of metrics to logistic regression function: https://chat.openai.com/share/39e19490-5083-4928-a5ef-46666b1759e4
+
+Creation of plotting function: https://chat.openai.com/share/b77ecd7f-58ef-4d44-9551-e0bb87087b39
+
+Editing cutoff_value_function and general modifications: https://chat.openai.com/share/9d2dc05f-76d9-40b2-9944-4d8830bd95aa
+
+Creating descriptions for logistic regression function: https://chat.openai.com/share/98a8ec3b-e08b-4889-afbf-9a6eeab478ae

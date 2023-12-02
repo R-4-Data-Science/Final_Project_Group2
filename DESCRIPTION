@@ -14,7 +14,7 @@ Description: This package provides a suite of functions for performing logistic
     with gradient descent optimization, plotting logistic curves, calculating 
     bootstrap confidence intervals, and determining optimal cutoff values for 
     predictions.
-License: GNU
+License: GPL-2
 Depends: R (>= 3.5.0)
 Imports: 
   graphics,

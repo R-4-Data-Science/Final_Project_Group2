@@ -221,9 +221,8 @@ plot_logistic_curve <- function(X, y) {
 #' @description Computes bootstrap confidence intervals for the coefficients
 #' estimated by logistic regression. The function uses resampling with replacement
 #' to estimate the variability of the coefficient estimates.
-#'
 #' @param alpha The significance level used to calculate the confidence interval.
-#' Typically set to 0.05 for a 95% confidence interval.
+#' Typically set to 0.05 for a 95 percent confidence interval.
 #' @param B The number of bootstrap samples to generate. Default is 20.
 #' @param X A \code{vector} or \code{matrix} representing the predictor variables.
 #' @param y A \code{vector} representing the binary response variable.
@@ -241,15 +240,16 @@ plot_logistic_curve <- function(X, y) {
 #' function to create the new confidence interval using the alpha provided by the
 #' user.
 #' @author Shannon Clark
+#' @importFrom stats quantile
 #' @export
 #'
 #' @examples
 #' data(mtcars)
 #' X <- mtcars$mpg
 #' y <- mtcars$am
-#' Bootstrap_function(alpha = 0.05, B = 20, X = X, y = y)
+#' bootstrap_function(alpha = 0.05, B = 20, X = X, y = y)
 
-Bootstrap_function <- function(alpha, B = 20, X, y) {
+bootstrap_function <- function(alpha, B = 20, X, y) {
   logistic_regression_result <- logistic_regression(X, y)
   beta_estimates <- logistic_regression_result$OptimizedCoefficients
   n <- length(beta_estimates)

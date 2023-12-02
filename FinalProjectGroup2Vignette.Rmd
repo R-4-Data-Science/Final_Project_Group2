@@ -8,7 +8,7 @@ date: "2023-12-02"
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ## Setup
-In order to use this package you must have a version of R that is 3.5.0 or higher. Start by cloning the repo "Final_Project_Group2". Once you open Rstudio open the R folder and open the file "Final_Project_Group2.R" in this folder. Now go to the environment and click the "Build" tab. Once you click that, select "install" and the package will install.
+In order to use this package you must have a version of R that is 3.5.0 or higher. Start by cloning the repo "R-4-Data-Science/Final_Project_Group2". Once you open Rstudio, open the R folder and open the file "Final_Project_Group2.R" in this folder. Now go to the environment and click the "Build" tab. Once you click that, select "install" and the package will install.
 ```{r}
 library(FinalProjectGroup2)
 ```
